@@ -91,7 +91,7 @@ Once installed, use the `ecli` command from your terminal:
 ### 🔍 Just suggest a command (safe, non-destructive)
 
 ```bash
-ecli -S "list all files in this directory"
+ecli -s "list all files in this directory"
 ```
 
 **Output:**
