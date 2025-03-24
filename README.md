@@ -70,7 +70,8 @@ This sets up a virtual environment, installs dependencies, asks for your preferr
 bash install.sh
 ```
 
-> ⚠️ Requires: Python 3.10–3.12 and Poetry
+> ⚠️ Might require to run `chmod +x install.sh` to make the script executable.
+> ⚠️ If you encounter issues, ensure you have the necessary permissions to execute scripts.
 
 ---
 
