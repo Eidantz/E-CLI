@@ -76,9 +76,9 @@ fi
 echo "API key(s) saved in $env_file"
 echo ""
 
-# Add installation directory to .env file
-echo "INSTALLATION_DIR=\"$install_dir\"" >> "$env_file"
-echo "Installation directory path saved in $env_file"
+# Save installation directory to .env file
+echo "ECLI_INSTALL_DIR=\"$install_dir\"" >> "$env_file"
+echo "Installation directory saved to $env_file"
 
 # Step 9: Create an alias for the ecli command in the appropriate shell rc file.
 alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${llm_service}/${llm_model}\""

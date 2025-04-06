@@ -12,9 +12,9 @@ class SessionMemory:
         load_dotenv()
         
         # Get installation directory from .env
-        install_dir = os.getenv('INSTALLATION_DIR')
+        install_dir = os.getenv('ECLI_INSTALL_DIR')
         if not install_dir:
-            raise ValueError("INSTALLATION_DIR not found in .env file. Please run the installation script again.")
+            raise ValueError("ECLI_INSTALL_DIR not found in .env file. Please run the installation script again.")
             
         # Create ecli_memory directory in installation folder
         self.memory_dir = Path(install_dir) / "ecli_memory"
@@ -75,9 +75,9 @@ class SessionMemory:
         load_dotenv()
         
         # Get installation directory from .env
-        install_dir = os.getenv('INSTALLATION_DIR')
+        install_dir = os.getenv('ECLI_INSTALL_DIR')
         if not install_dir:
-            raise ValueError("INSTALLATION_DIR not found in .env file. Please run the installation script again.")
+            raise ValueError("ECLI_INSTALL_DIR not found in .env file. Please run the installation script again.")
             
         memory_dir = Path(install_dir) / "ecli_memory"
         if not memory_dir.exists():

@@ -1,5 +1,7 @@
 import argparse
 from pathlib import Path
+import os
+from dotenv import load_dotenv
 from .session_memory import SessionMemory
 from .llm import setup_llm, user_query_to_zsh_commands
 from .system import get_user_os, execute_zsh_command
@@ -32,7 +34,16 @@ def main():
 
     # Handle --clear-memory flag
     if args.clear_memory:
-        memory_dir = Path("ecli_memory")
+        # Load environment variables
+        load_dotenv()
+        
+        # Get installation directory from .env
+        install_dir = os.getenv('ECLI_INSTALL_DIR')
+        if not install_dir:
+            print("Error: ECLI_INSTALL_DIR not found in .env file. Please run the installation script again.")
+            return
+            
+        memory_dir = Path(install_dir) / "ecli_memory"
         if memory_dir.exists():
             for session_file in memory_dir.glob("session_*.json"):
                 try:
