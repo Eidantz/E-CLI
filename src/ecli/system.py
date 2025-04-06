@@ -22,7 +22,8 @@ def get_user_os() -> str:
             distro_name = distro.name()
             distro_version = distro.version()
             return (f"{distro_name} {distro_version}")
-        except:
+        except Exception as e:
+            print(f"Error getting distro info: {e}")
             return "Linux"
     else:
         return(f"{os_name} {platform.release()} (Version: {os_version})")
