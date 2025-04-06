@@ -64,6 +64,8 @@ def main():
             print("Suggested commands:")
             for cmd in commands:
                 print(cmd)
+            # Save the interaction even in suggestion mode
+            session_memory.add_interaction(args.query, commands)
         elif args.execute:
             print("Executing commands:")
             for cmd in commands:
