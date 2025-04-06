@@ -4,11 +4,20 @@ import os
 import psutil
 from pathlib import Path
 from typing import List, Dict, Any, Optional
+from dotenv import load_dotenv
 
 class SessionMemory:
     def __init__(self):
-        # Create ecli_memory directory if it doesn't exist
-        self.memory_dir = Path("ecli_memory")
+        # Load environment variables
+        load_dotenv()
+        
+        # Get installation directory from .env
+        install_dir = os.getenv('ECLI_INSTALL_DIR')
+        if not install_dir:
+            raise ValueError("ECLI_INSTALL_DIR not found in .env file. Please run the installation script again.")
+            
+        # Create ecli_memory directory in installation folder
+        self.memory_dir = Path(install_dir) / "ecli_memory"
         self.memory_dir.mkdir(exist_ok=True)
         
         # Get the parent terminal's PID (shell PID)
@@ -62,7 +71,15 @@ class SessionMemory:
     @classmethod
     def cleanup_old_sessions(cls) -> None:
         """Clean up session files for terminals that no longer exist"""
-        memory_dir = Path("ecli_memory")
+        # Load environment variables
+        load_dotenv()
+        
+        # Get installation directory from .env
+        install_dir = os.getenv('ECLI_INSTALL_DIR')
+        if not install_dir:
+            raise ValueError("ECLI_INSTALL_DIR not found in .env file. Please run the installation script again.")
+            
+        memory_dir = Path(install_dir) / "ecli_memory"
         if not memory_dir.exists():
             return
 
