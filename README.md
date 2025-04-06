@@ -12,6 +12,8 @@
 - ⚙️ Supports both "suggestion" and "execute" modes  
 - 🐚 Works with Bash and Zsh  
 - 🔒 API keys managed locally in `.env`  
+- 💾 Session memory for command history (last 10 commands)  
+- 🧹 Memory management tools  
 
 ---
 
@@ -71,6 +73,7 @@ bash install.sh
 ```
 
 > ⚠️ Might require to run `chmod +x install.sh` to make the script executable.
+
 > ⚠️ If you encounter issues, ensure you have the necessary permissions to execute scripts.
 
 ---
@@ -83,6 +86,8 @@ Once installed, use the `ecli` command from your terminal:
 
 - `-S`, `--suggestion`: Only **suggest** the generated shell commands — nothing will be executed. *(Default if no flag is given.)*
 - `-e`, `--execute`: Automatically **execute** the generated commands in Zsh.
+- `-v`, `--version`: Display the current version of E-CLI.
+- `--clear-memory`: Clear all session memory files.
 
 ---
 
