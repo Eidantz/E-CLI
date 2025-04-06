@@ -21,13 +21,13 @@ class QueryToZshCommand(dspy.Signature):
     session_history: List[dict] = dspy.InputField(desc="Current session's command history")
     commands: List[str] = dspy.OutputField(desc="Generated Zsh commands to execute the query")
 
-def user_query_to_zsh_commands(query: str, session_memory, user_os: str) -> List[str]:
+def user_query_to_zsh_commands(query: str, session_memory: SessionMemory, user_os: str) -> List[str]:
     """
     Generates a list of Zsh commands from the provided query using the LLM.
     
     Args:
         query (str): User query to be converted to Zsh commands.
-        session_memory: Current session's memory manager.
+        session_memory (SessionMemory): Current session's memory manager.
         user_os (str): User's operating system information.
     
     Returns:
@@ -42,6 +42,4 @@ def user_query_to_zsh_commands(query: str, session_memory, user_os: str) -> List
         session_history=session_history
     )
     
-    commands = response.commands
-    session_memory.add_interaction(query, commands)
-    return commands 
+    return response.commands 
