@@ -1,5 +1,6 @@
 import dspy
 from typing import List
+from ecli.session_memory import SessionMemory
 
 def setup_llm(llm_model: str):
     """
