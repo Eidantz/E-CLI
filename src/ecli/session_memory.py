@@ -71,7 +71,15 @@ class SessionMemory:
     @classmethod
     def cleanup_old_sessions(cls) -> None:
         """Clean up session files for terminals that no longer exist"""
-        memory_dir = Path("ecli_memory")
+        # Load environment variables
+        load_dotenv()
+        
+        # Get installation directory from .env
+        install_dir = os.getenv('INSTALLATION_DIR')
+        if not install_dir:
+            raise ValueError("INSTALLATION_DIR not found in .env file. Please run the installation script again.")
+            
+        memory_dir = Path(install_dir) / "ecli_memory"
         if not memory_dir.exists():
             return
 
