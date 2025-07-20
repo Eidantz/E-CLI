@@ -81,21 +81,21 @@ echo "ECLI_INSTALL_DIR=\"$install_dir\"" >> "$env_file"
 echo "Installation directory saved to $env_file"
 
 # Step 9: Create an alias for the ecli command in the appropriate shell rc file.
-# alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${llm_service}/${llm_model}\""
-# echo "Constructed alias:"
-# echo "$alias_line"
+alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${llm_service}/${llm_model}\""
+echo "Constructed alias:"
+echo "$alias_line"
 
-# if [ -f "$HOME/.zshrc" ]; then
-#     echo "Adding alias to $HOME/.zshrc..."
-#     echo "$alias_line" >> "$HOME/.zshrc"
-#     echo "Alias added to $HOME/.zshrc."
-# fi
+if [ -f "$HOME/.zshrc" ]; then
+    echo "Adding alias to $HOME/.zshrc..."
+    echo "$alias_line" >> "$HOME/.zshrc"
+    echo "Alias added to $HOME/.zshrc."
+fi
 
-# if [ -f "$HOME/.bashrc" ]; then
-#     echo "Adding alias to $HOME/.bashrc..."
-#     echo "$alias_line" >> "$HOME/.bashrc"
-#     echo "Alias added to $HOME/.bashrc."
-# fi
+if [ -f "$HOME/.bashrc" ]; then
+    echo "Adding alias to $HOME/.bashrc..."
+    echo "$alias_line" >> "$HOME/.bashrc"
+    echo "Alias added to $HOME/.bashrc."
+fi
 
 echo ""
 echo "Installation complete. You can now run 'ecli' from your terminal."
