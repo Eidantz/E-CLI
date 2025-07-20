@@ -36,13 +36,13 @@ echo "Package installed successfully."
 
 
 # Step 7: Ask for the LLM service and model selection
-read -p "Enter desired LLM service (groq, openai, azure) [openai]: " llm_service
+read -p "Enter desired LLM service (groq, openai, azure) [groq]: " llm_service
 if [ -z "$llm_service" ]; then
-    llm_service="openai"
+    llm_service="groq"
 fi
 
 if [ "$llm_service" = "groq" ]; then
-    default_model="llama-3.3-70b-specdec"
+    default_model="llama-3.3-70b-versatile"
 else
     default_model="gpt-4o"
 fi
@@ -60,7 +60,7 @@ touch "$env_file"
 
 if [ "$llm_service" = "groq" ]; then
     read -p "Enter your GROQ API key: " api_key
-    echo "GROQ_API_KEY=\"$api_key\"" >> "$env_file"
+    # echo "GROQ_API_KEY=\"$api_key\"" >> "$env_file"
 elif [ "$llm_service" = "openai" ]; then
     read -p "Enter your OpenAI API key: " api_key
     echo "OPENAI_API_KEY=\"$api_key\"" >> "$env_file"
@@ -81,21 +81,21 @@ echo "ECLI_INSTALL_DIR=\"$install_dir\"" >> "$env_file"
 echo "Installation directory saved to $env_file"
 
 # Step 9: Create an alias for the ecli command in the appropriate shell rc file.
-alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${llm_service}/${llm_model}\""
-echo "Constructed alias:"
-echo "$alias_line"
+# alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${llm_service}/${llm_model}\""
+# echo "Constructed alias:"
+# echo "$alias_line"
 
-if [ -f "$HOME/.zshrc" ]; then
-    echo "Adding alias to $HOME/.zshrc..."
-    echo "$alias_line" >> "$HOME/.zshrc"
-    echo "Alias added to $HOME/.zshrc."
-fi
+# if [ -f "$HOME/.zshrc" ]; then
+#     echo "Adding alias to $HOME/.zshrc..."
+#     echo "$alias_line" >> "$HOME/.zshrc"
+#     echo "Alias added to $HOME/.zshrc."
+# fi
 
-if [ -f "$HOME/.bashrc" ]; then
-    echo "Adding alias to $HOME/.bashrc..."
-    echo "$alias_line" >> "$HOME/.bashrc"
-    echo "Alias added to $HOME/.bashrc."
-fi
+# if [ -f "$HOME/.bashrc" ]; then
+#     echo "Adding alias to $HOME/.bashrc..."
+#     echo "$alias_line" >> "$HOME/.bashrc"
+#     echo "Alias added to $HOME/.bashrc."
+# fi
 
 echo ""
 echo "Installation complete. You can now run 'ecli' from your terminal."

@@ -15,8 +15,8 @@ def main():
     
     parser = argparse.ArgumentParser(description="LLM Command Assistant for Zsh")
     # Optional LLM flag; defaults to groq if not provided
-    parser.add_argument("--llm", type=str, default="groq/llama-3.3-70b-specdec",
-                        help="LLM model identifier to use (default: groq/llama-3.3-70b-specdec)")
+    parser.add_argument("--llm", type=str, default="groq/llama-3.3-70b-versatile",
+                        help="LLM model identifier to use (default: groq/llama-3.3-70b-versatile)")
     # Mutually exclusive modes: suggestion or execute
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-s", "--suggestion", action="store_true",
