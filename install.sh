@@ -42,7 +42,8 @@ if [ -z "$llm_service" ]; then
 fi
 
 if [ "$llm_service" = "groq" ]; then
-    default_model="llama-3.3-70b-versatile"
+    # default_model="llama-3.3-70b-versatile"
+    default_model="openai/gpt-oss-120b"
 else
     default_model="gpt-4o"
 fi
