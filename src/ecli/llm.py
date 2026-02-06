@@ -1,15 +1,41 @@
-import dspy
+import logging
+import os
 from typing import List
+
+import dspy
+
 from ecli.session_memory import SessionMemory
 
-def setup_llm(llm_model: str):
+logger = logging.getLogger(__name__)
+
+OLLAMA_DEFAULT_API_BASE = "http://localhost:11434"
+OLLAMA_PROVIDER_PREFIXES = ("ollama_chat/", "ollama/")
+
+
+def setup_llm(llm_model: str) -> None:
     """
-    Configures the language model.
-    
+    Configures the language model for DSPy.
+
+    Detects whether the model uses an Ollama provider prefix and
+    applies the appropriate api_base and api_key settings. For
+    non-Ollama providers, the model is configured directly.
+
     Args:
-        llm_model (str): Identifier of the LLM to use.
+        llm_model (str): Identifier of the LLM to use, in the
+            format "provider/model_name" (e.g.
+            "ollama_chat/glm-4.7:cloud", "groq/llama-3.3-70b-versatile").
     """
-    lm = dspy.LM(llm_model)
+    if llm_model.startswith(OLLAMA_PROVIDER_PREFIXES):
+        api_base = os.getenv(
+            "OLLAMA_API_BASE", OLLAMA_DEFAULT_API_BASE
+        )
+        logger.info(
+            "Configuring Ollama LLM: %s at %s", llm_model, api_base
+        )
+        lm = dspy.LM(llm_model, api_base=api_base, api_key="")
+    else:
+        logger.info("Configuring LLM: %s", llm_model)
+        lm = dspy.LM(llm_model)
     dspy.configure(lm=lm)
 
 class QueryToZshCommand(dspy.Signature):

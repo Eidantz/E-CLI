@@ -10,40 +10,34 @@ if [ -z "$install_dir" ]; then
 fi
 echo "Installation directory: $install_dir"
 
-# Step 3: Check if Poetry is installed
-if ! command -v poetry &> /dev/null; then
-    echo "Poetry is not installed. Please install Poetry first and re-run this script."
+# Step 2: Check if uv is installed
+if ! command -v uv &> /dev/null; then
+    echo "uv is not installed. Please install uv first (https://docs.astral.sh/uv/) and re-run this script."
     exit 1
 fi
 
-# Step 4: Install project dependencies using Poetry
-echo "Installing dependencies with Poetry..."
-poetry install
-
-# Step 5: Build the package
-echo "Building the package..."
-poetry build
-
-# Step 6: Install the package locally so that the entry point (ecli) is available
-echo "Installing package locally..."
-source "$install_dir/.venv/bin/activate"
-pip install --no-deps dist/*.whl
+# Step 3: Install project dependencies and create .venv using uv
+echo "Installing dependencies with uv..."
+uv sync --project "$install_dir"
 if [ $? -ne 0 ]; then
-    echo "Failed to install the package. Please check the output for errors."
+    echo "Failed to install dependencies. Please check the output for errors."
     exit 1
 fi
 echo "Package installed successfully."
 
 
 # Step 7: Ask for the LLM service and model selection
-read -p "Enter desired LLM service (groq, openai, azure) [groq]: " llm_service
+read -p "Enter desired LLM service (ollama, groq, openai, azure) [ollama]: " llm_service
 if [ -z "$llm_service" ]; then
-    llm_service="groq"
+    llm_service="ollama"
 fi
 
-if [ "$llm_service" = "groq" ]; then
-    # default_model="llama-3.3-70b-versatile"
+if [ "$llm_service" = "ollama" ]; then
+    default_model="glm-4.7:cloud"
+elif [ "$llm_service" = "groq" ]; then
     default_model="openai/gpt-oss-120b"
+elif [ "$llm_service" = "openai" ]; then
+    default_model="gpt-4o"
 else
     default_model="gpt-4o"
 fi
@@ -53,28 +47,41 @@ if [ -z "$llm_model" ]; then
     llm_model="$default_model"
 fi
 
-# Step 8: Ask for API key(s) based on the selected LLM service and save them in a .env file.
+# Step 8: Ask for API key(s) / configuration based on the selected LLM service.
 echo ""
-echo "=== API Key Configuration for ${llm_service} ==="
 env_file="$install_dir/.env"
 touch "$env_file"
 
-if [ "$llm_service" = "groq" ]; then
+if [ "$llm_service" = "ollama" ]; then
+    echo "=== Ollama Configuration ==="
+    echo "Ollama runs locally and does not require an API key."
+    read -p "Enter Ollama API base URL (default: http://localhost:11434): " ollama_base
+    if [ -z "$ollama_base" ]; then
+        ollama_base="http://localhost:11434"
+    fi
+    echo "OLLAMA_API_BASE=\"$ollama_base\"" >> "$env_file"
+    echo "Ollama configuration saved in $env_file"
+elif [ "$llm_service" = "groq" ]; then
+    echo "=== API Key Configuration for groq ==="
     read -p "Enter your GROQ API key: " api_key
-    # echo "GROQ_API_KEY=\"$api_key\"" >> "$env_file"
+    echo "GROQ_API_KEY=\"$api_key\"" >> "$env_file"
+    echo "API key saved in $env_file"
 elif [ "$llm_service" = "openai" ]; then
+    echo "=== API Key Configuration for openai ==="
     read -p "Enter your OpenAI API key: " api_key
     echo "OPENAI_API_KEY=\"$api_key\"" >> "$env_file"
-elif [ "$llm_service" = "azure openai" ]; then
+    echo "API key saved in $env_file"
+elif [ "$llm_service" = "azure" ]; then
+    echo "=== API Key Configuration for azure ==="
     read -p "Enter your Azure API key (e.g. my-azure-api-key): " azure_key
     read -p "Enter your Azure API base (e.g. https://example-endpoint.openai.azure.com): " azure_base
     read -p "Enter your Azure API version (e.g. 2023-05-15): " azure_version
     echo "AZURE_API_KEY=\"$azure_key\"" >> "$env_file"
     echo "AZURE_API_BASE=\"$azure_base\"" >> "$env_file"
     echo "AZURE_API_VERSION=\"$azure_version\"" >> "$env_file"
+    echo "API key(s) saved in $env_file"
 fi
 
-echo "API key(s) saved in $env_file"
 echo ""
 
 # Save installation directory to .env file
@@ -82,7 +89,13 @@ echo "ECLI_INSTALL_DIR=\"$install_dir\"" >> "$env_file"
 echo "Installation directory saved to $env_file"
 
 # Step 9: Create an alias for the ecli command in the appropriate shell rc file.
-alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${llm_service}/${llm_model}\""
+# Map "ollama" to "ollama_chat" prefix required by DSPy/litellm for chat models
+if [ "$llm_service" = "ollama" ]; then
+    alias_prefix="ollama_chat"
+else
+    alias_prefix="$llm_service"
+fi
+alias_line="alias ecli=\"$install_dir/.venv/bin/ecli --llm ${alias_prefix}/${llm_model}\""
 echo "Constructed alias:"
 echo "$alias_line"
 

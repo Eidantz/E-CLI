@@ -1,10 +1,17 @@
 import argparse
-from pathlib import Path
+import logging
 import os
+from pathlib import Path
+
 from dotenv import load_dotenv
-from .session_memory import SessionMemory
+
 from .llm import setup_llm, user_query_to_zsh_commands
-from .system import get_user_os, execute_zsh_command
+from .session_memory import SessionMemory
+from .system import execute_zsh_command, get_user_os
+
+logger = logging.getLogger(__name__)
+
+DEFAULT_LLM_MODEL = "ollama_chat/glm-4.7:cloud"
 
 # Version information
 __version__ = "2.0.0"
@@ -13,10 +20,15 @@ def main():
     # Clean up old session files at startup
     SessionMemory.cleanup_old_sessions()
     
-    parser = argparse.ArgumentParser(description="LLM Command Assistant for Zsh")
-    # Optional LLM flag; defaults to groq if not provided
-    parser.add_argument("--llm", type=str, default="groq/llama-3.3-70b-versatile",
-                        help="LLM model identifier to use (default: groq/llama-3.3-70b-versatile)")
+    parser = argparse.ArgumentParser(
+        description="LLM Command Assistant for Zsh"
+    )
+    parser.add_argument(
+        "--llm",
+        type=str,
+        default=DEFAULT_LLM_MODEL,
+        help=f"LLM model identifier (default: {DEFAULT_LLM_MODEL})",
+    )
     # Mutually exclusive modes: suggestion or execute
     group = parser.add_mutually_exclusive_group()
     group.add_argument("-s", "--suggestion", action="store_true",

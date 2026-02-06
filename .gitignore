@@ -175,3 +175,8 @@ cython_debug/
 
 # Session memory files
 ecli_memory/
+
+# IDE
+.vscode/
+.idea/
+.cursor/
